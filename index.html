@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weltbilder im Wandel – Geozentrisch & Heliozentrisch</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f2ed;
+    --bg2: #eceae3;
+    --ink: #1a1814;
+    --ink2: #3d3a34;
+    --ink3: #7a7570;
+    --rule: #c8c3ba;
+    --accent: #c0392b;
+    --accent2: #1a5276;
+    --accent3: #117a65;
+    --sun-col: #e67e22;
+    --earth-col: #2980b9;
+    --card: #ffffff;
+    --card-border: #ddd9d0;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Mono', monospace;
+    font-size: 15px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* GRID BACKGROUND */
+  body::before {
+    content:'';
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    background-image:
+      linear-gradient(rgba(26,24,20,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26,24,20,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events:none; z-index:0;
+  }
+
+  /* NAV */
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background: rgba(244,242,237,0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule);
+    height: 56px;
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 0 2.5rem;
+  }
+  .nav-logo {
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:0.85rem;
+    letter-spacing:0.05em;
+    color: var(--ink);
+    text-transform:uppercase;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display:flex; gap:2rem; list-style:none; }
+  .nav-links a {
+    font-family:'DM Mono',monospace;
+    font-size:0.7rem;
+    color: var(--ink3);
+    text-decoration:none;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* SECTIONS */
+  section { position:relative; z-index:1; padding:100px 2.5rem 80px; }
+  .container { max-width:1080px; margin:0 auto; }
+
+  /* HERO */
+  #hero {
+    min-height:100vh;
+    display:flex; flex-direction:column;
+    justify-content:center;
+    padding-top:56px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .hero-tag {
+    font-size:0.7rem;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color: var(--accent);
+    margin-bottom:1.5rem;
+    opacity:0; animation: fadeIn 0.8s 0.2s forwards;
+  }
+  .hero-title {
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size: clamp(3rem,8vw,7rem);
+    line-height:0.95;
+    color: var(--ink);
+    margin-bottom:2rem;
+    opacity:0; animation: fadeIn 0.8s 0.4s forwards;
+  }
+  .hero-title em {
+    font-style:normal;
+    color: var(--accent);
+  }
+  .hero-meta {
+    display:flex; gap:3rem; align-items:flex-start;
+    opacity:0; animation: fadeIn 0.8s 0.6s forwards;
+    border-top: 1px solid var(--rule);
+    padding-top:2rem;
+    margin-top:1rem;
+  }
+  .hero-meta-item label {
+    display:block;
+    font-size:0.65rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color: var(--ink3);
+    margin-bottom:0.3rem;
+  }
+  .hero-meta-item span {
+    font-size:0.85rem;
+    color: var(--ink2);
+  }
+
+  @keyframes fadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+  /* SECTION HEADERS */
+  .sec-header {
+    display:flex; align-items:baseline; gap:1.5rem;
+    margin-bottom:3rem;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom:1rem;
+  }
+  .sec-num {
+    font-family:'DM Mono',monospace;
+    font-size:0.65rem;
+    color: var(--ink3);
+    letter-spacing:0.1em;
+  }
+  .sec-title {
+    font-family:'Syne',sans-serif;
+    font-weight:700;
+    font-size:clamp(1.4rem,3vw,2.2rem);
+    color: var(--ink);
+  }
+  .sec-title span { color: var(--accent); }
+
+  /* ===== MODELS ===== */
+  #modelle { background: var(--bg); }
+
+  .models-grid {
+    display:grid; grid-template-columns:1fr 1fr; gap:2rem;
+  }
+  .model-card {
+    background: var(--card);
+    border:1px solid var(--card-border);
+    border-radius:4px;
+    padding:2rem;
+    display:flex; flex-direction:column;
+    position:relative;
+    overflow:hidden;
+  }
+  .model-card::before {
+    content:'';
+    position:absolute; top:0; left:0; right:0; height:3px;
+  }
+  .model-card.geo::before { background: var(--accent2); }
+  .model-card.helio::before { background: var(--sun-col); }
+
+  .model-label {
+    font-size:0.65rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    margin-bottom:0.5rem;
+  }
+  .geo .model-label { color: var(--accent2); }
+  .helio .model-label { color: var(--sun-col); }
+
+  .model-name {
+    font-family:'Syne',sans-serif;
+    font-weight:700;
+    font-size:1.3rem;
+    color: var(--ink);
+    margin-bottom:0.3rem;
+  }
+  .model-by {
+    font-size:0.75rem;
+    color: var(--ink3);
+    margin-bottom:1.5rem;
+    font-style:italic;
+  }
+
+  .orbit-canvas {
+    position:relative;
+    width:300px; height:300px;
+    margin:0 auto 1.5rem;
+    flex-shrink:0;
+  }
+  .orbit-ring {
+    position:absolute;
+    border-radius:50%;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+  }
+  .geo .orbit-ring { border:1px solid rgba(26,82,118,0.2); }
+  .helio .orbit-ring { border:1px solid rgba(230,126,34,0.2); }
+
+  .center-body {
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    border-radius:50%; z-index:10;
+  }
+  .planet-dot {
+    position:absolute; border-radius:50%;
+    transform:translate(-50%,-50%); z-index:5;
+    cursor:pointer; transition:transform 0.2s;
+  }
+  .planet-dot:hover { transform:translate(-50%,-50%) scale(1.4); }
+
+  .model-controls {
+    display:flex; gap:0.5rem; justify-content:center; margin-bottom:1.2rem;
+  }
+  .ctrl-btn {
+    font-family:'DM Mono',monospace;
+    font-size:0.65rem;
+    letter-spacing:0.08em;
+    padding:0.35rem 0.9rem;
+    border:1px solid var(--rule);
+    background:transparent;
+    color: var(--ink3);
+    cursor:pointer; border-radius:2px;
+    transition:all 0.15s;
+    text-transform:uppercase;
+  }
+  .ctrl-btn:hover { border-color: var(--ink2); color: var(--ink); }
+  .ctrl-btn.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+  .model-desc {
+    font-size:0.82rem;
+    color: var(--ink2);
+    line-height:1.7;
+    border-top:1px solid var(--rule);
+    padding-top:1rem;
+    margin-top:auto;
+  }
+  .model-desc strong { color: var(--ink); font-weight:500; }
+
+  .audio-link {
+    display:inline-flex; align-items:center; gap:0.5rem;
+    margin-top:1rem;
+    font-size:0.7rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    text-decoration:none;
+    color: var(--accent);
+    border:1px solid var(--accent);
+    padding:0.4rem 0.9rem;
+    border-radius:2px;
+    transition:all 0.15s;
+  }
+  .audio-link:hover { background: var(--accent); color:white; }
+
+  /* TOOLTIP */
+  .tooltip {
+    position:fixed;
+    background: var(--ink);
+    color: var(--bg);
+    border-radius:3px;
+    padding:0.5rem 0.8rem;
+    font-size:0.75rem;
+    pointer-events:none;
+    z-index:999; display:none;
+    max-width:180px; line-height:1.4;
+  }
+  .tooltip strong { display:block; color:#f0c87a; margin-bottom:2px; font-size:0.7rem; }
+
+  /* ===== TIMELINE ===== */
+  #timeline { background: var(--bg2); border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); }
+
+  .tl-outer { position:relative; }
+  .tl-track {
+    position:absolute; left:110px; top:0; bottom:0; width:1px;
+    background: var(--rule);
+  }
+
+  .tl-item {
+    display:grid;
+    grid-template-columns:100px 40px 1fr;
+    gap:0;
+    margin-bottom:0;
+    opacity:0; transition:opacity 0.5s, transform 0.5s;
+    transform:translateX(-10px);
+    padding:1.5rem 0;
+    border-bottom:1px solid var(--rule);
+  }
+  .tl-item:last-child { border-bottom:none; }
+  .tl-item.visible { opacity:1; transform:translateX(0); }
+
+  .tl-year {
+    font-family:'DM Mono',monospace;
+    font-size:0.68rem;
+    color: var(--ink3);
+    text-align:right;
+    padding-right:1.2rem;
+    padding-top:0.1rem;
+    line-height:1.3;
+  }
+  .tl-dot-col {
+    display:flex; flex-direction:column; align-items:center;
+    position:relative;
+  }
+  .tl-dot {
+    width:12px; height:12px;
+    border-radius:50%;
+    border:2px solid var(--rule);
+    background: var(--bg2);
+    position:relative; z-index:2;
+    flex-shrink:0;
+    margin-top:2px;
+    transition:all 0.2s;
+    cursor:pointer;
+  }
+  .tl-item:hover .tl-dot { border-color: var(--accent); background: var(--accent); }
+  .tl-dot.geo-dot { border-color: var(--accent2); }
+  .tl-dot.helio-dot { border-color: var(--sun-col); }
+  .tl-dot.geo-dot:hover, .tl-dot.geo-dot.open { background: var(--accent2); }
+  .tl-dot.helio-dot:hover, .tl-dot.helio-dot.open { background: var(--sun-col); }
+
+  .tl-content { padding-left:1.5rem; }
+  .tl-person {
+    font-family:'Syne',sans-serif;
+    font-weight:700;
+    font-size:0.95rem;
+    color: var(--ink);
+    margin-bottom:0.2rem;
+  }
+  .tl-summary {
+    font-size:0.8rem;
+    color: var(--ink2);
+    margin-bottom:0.5rem;
+  }
+  .tl-tag {
+    display:inline-block;
+    font-size:0.6rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    padding:0.15rem 0.6rem;
+    border-radius:2px;
+    margin-bottom:0.5rem;
+  }
+  .tag-geo { background:rgba(26,82,118,0.1); color:var(--accent2); border:1px solid rgba(26,82,118,0.2); }
+  .tag-helio { background:rgba(230,126,34,0.1); color:var(--sun-col); border:1px solid rgba(230,126,34,0.2); }
+  .tag-both { background:rgba(17,122,101,0.1); color:var(--accent3); border:1px solid rgba(17,122,101,0.2); }
+  .tag-proof { background:rgba(192,57,43,0.1); color:var(--accent); border:1px solid rgba(192,57,43,0.2); }
+
+  .tl-detail {
+    max-height:0; overflow:hidden;
+    transition:max-height 0.4s ease;
+    font-size:0.78rem;
+    color: var(--ink3);
+    line-height:1.7;
+  }
+  .tl-detail.open { max-height:200px; }
+  .tl-detail p {
+    padding-top:0.6rem;
+    border-top:1px solid var(--rule);
+    margin-top:0.6rem;
+  }
+  .tl-toggle {
+    font-size:0.65rem;
+    color: var(--ink3);
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    cursor:pointer;
+    border:none; background:none;
+    padding:0; font-family:'DM Mono',monospace;
+    transition:color 0.2s;
+  }
+  .tl-toggle:hover { color: var(--accent); }
+
+  /* ===== VERGLEICH ===== */
+  #vergleich { background: var(--bg); }
+
+  .compare-tabs {
+    display:flex; gap:0; margin-bottom:2rem;
+    border:1px solid var(--rule); border-radius:3px;
+    width:fit-content;
+  }
+  .tab-btn {
+    font-family:'DM Mono',monospace;
+    font-size:0.7rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    padding:0.6rem 1.4rem;
+    border:none; background:transparent;
+    color: var(--ink3); cursor:pointer;
+    transition:all 0.15s;
+    border-right:1px solid var(--rule);
+  }
+  .tab-btn:last-child { border-right:none; }
+  .tab-btn.active { background: var(--ink); color: var(--bg); }
+
+  .compare-table { width:100%; border-collapse:collapse; display:none; }
+  .compare-table.active { display:table; }
+  .compare-table th {
+    font-family:'DM Mono',monospace;
+    font-size:0.7rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    padding:0.8rem 1rem;
+    border:1px solid var(--rule);
+    background:var(--bg2);
+    text-align:left;
+  }
+  .th-geo { color:var(--accent2); }
+  .th-helio { color:var(--sun-col); }
+  .compare-table td {
+    padding:0.9rem 1rem;
+    border:1px solid var(--rule);
+    font-size:0.82rem;
+    color: var(--ink2);
+    vertical-align:top;
+    transition:background 0.15s;
+  }
+  .compare-table tr:hover td { background: var(--bg2); }
+  .compare-table td:first-child {
+    font-family:'DM Mono',monospace;
+    font-size:0.7rem;
+    letter-spacing:0.05em;
+    color: var(--ink);
+    font-weight:500;
+    background:var(--bg2);
+    width:120px;
+  }
+  .geo-cell { color:#1a5276; }
+  .helio-cell { color:#a04000; }
+
+  .summary-cards { display:none; grid-template-columns:1fr 1fr; gap:1.5rem; }
+  .summary-cards.active { display:grid; }
+  .sum-card {
+    background:var(--card); border:1px solid var(--card-border);
+    border-radius:4px; padding:1.8rem;
+  }
+  .sum-card.geo-card { border-top:3px solid var(--accent2); }
+  .sum-card.helio-card { border-top:3px solid var(--sun-col); }
+  .sum-card h3 {
+    font-family:'Syne',sans-serif; font-weight:700;
+    font-size:0.95rem; margin-bottom:1rem;
+    text-transform:uppercase; letter-spacing:0.05em;
+  }
+  .geo-card h3 { color:var(--accent2); }
+  .helio-card h3 { color:var(--sun-col); }
+  .sum-card ul { list-style:none; }
+  .sum-card ul li {
+    font-size:0.8rem; color:var(--ink2);
+    padding:0.4rem 0;
+    border-bottom:1px solid var(--rule);
+    display:flex; gap:0.5rem; align-items:baseline;
+  }
+  .sum-card ul li::before { content:"—"; color:var(--ink3); flex-shrink:0; }
+
+  /* KAHOOT */
+  #kahoot-section { background:var(--bg2); border-top:1px solid var(--rule); padding:60px 2.5rem; }
+  .kahoot-inner { max-width:1080px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+  .kahoot-text label { display:block; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--ink3); margin-bottom:0.5rem; }
+  .kahoot-text h3 { font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--ink); }
+  .kahoot-btn {
+    display:inline-flex; align-items:center; gap:0.7rem;
+    background:#46178f; color:white;
+    font-family:'DM Mono',monospace; font-size:0.75rem;
+    letter-spacing:0.1em; text-transform:uppercase;
+    padding:0.9rem 2rem; border-radius:3px;
+    text-decoration:none; transition:all 0.2s;
+    border:none; cursor:pointer;
+  }
+  .kahoot-btn:hover { background:#5e1fb5; transform:translateY(-1px); }
+
+  /* FOOTER */
+  footer {
+    position:relative; z-index:1;
+    background: var(--ink);
+    color: rgba(244,242,237,0.5);
+    padding:3rem 2.5rem;
+    font-size:0.75rem;
+  }
+  .footer-inner { max-width:1080px; margin:0 auto; }
+  .footer-title {
+    font-family:'Syne',sans-serif; font-weight:700;
+    font-size:0.75rem; letter-spacing:0.15em;
+    text-transform:uppercase; color:rgba(244,242,237,0.3);
+    margin-bottom:1.2rem;
+  }
+  .footer-sources { display:flex; flex-direction:column; gap:0.4rem; }
+  .footer-sources a {
+    color:rgba(244,242,237,0.5); text-decoration:none;
+    transition:color 0.2s;
+  }
+  .footer-sources a:hover { color:rgba(244,242,237,0.9); }
+  .footer-bottom {
+    margin-top:2rem; padding-top:1.5rem;
+    border-top:1px solid rgba(244,242,237,0.1);
+    color:rgba(244,242,237,0.3);
+    font-size:0.7rem;
+  }
+
+  @media(max-width:768px) {
+    .models-grid { grid-template-columns:1fr; }
+    .tl-track { left:80px; }
+    .tl-item { grid-template-columns:70px 30px 1fr; }
+    .summary-cards { grid-template-columns:1fr; }
+    .kahoot-inner { flex-direction:column; }
+    nav { padding:0 1rem; }
+    .nav-links { gap:1rem; }
+    .hero-meta { flex-direction:column; gap:1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="tooltip" id="tooltip"></div>
+
+<nav>
+  <div class="nav-logo">Weltbilder <span>im Wandel</span></div>
+  <ul class="nav-links">
+    <li><a href="#modelle">Modelle</a></li>
+    <li><a href="#timeline">Zeitstrahl</a></li>
+    <li><a href="#vergleich">Vergleich</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-tag">Physik · Thema 1 · Max-Josef-Stift München</div>
+    <h1 class="hero-title">Geo- &amp;<br><em>Helio-</em><br>zentrismus</h1>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <label>Thema</label>
+        <span>Gegenüberstellung der Weltbilder</span>
+      </div>
+      <div class="hero-meta-item">
+        <label>Zeitraum</label>
+        <span>2. Jh. n. Chr. – 20. Jh.</span>
+      </div>
+      <div class="hero-meta-item">
+        <label>Fach</label>
+        <span>Physik / Astronomie</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODELLE -->
+<section id="modelle">
+  <div class="container">
+    <div class="sec-header">
+      <span class="sec-num">01 /</span>
+      <h2 class="sec-title">Die zwei <span>Weltmodelle</span></h2>
+    </div>
+    <div class="models-grid">
+      <!-- GEO -->
+      <div class="model-card geo">
+        <div class="model-label">Modell A</div>
+        <div class="model-name">Geozentrisches Weltbild</div>
+        <div class="model-by">nach Claudius Ptolemäus · 100–160 n. Chr.</div>
+        <div class="orbit-canvas" id="geo-canvas">
+          <div class="center-body" id="geo-center" style="width:22px;height:22px;background:radial-gradient(circle at 35% 35%,#5dade2,#2980b9);box-shadow:0 0 10px rgba(41,128,185,0.5);"></div>
+        </div>
+        <div class="model-controls">
+          <button class="ctrl-btn active" onclick="setSpeed('geo',1,this)">Normal</button>
+          <button class="ctrl-btn" onclick="setSpeed('geo',3,this)">Schnell</button>
+          <button class="ctrl-btn" onclick="setSpeed('geo',0,this)">Pause</button>
+        </div>
+        <div class="model-desc">
+          <strong>Erde</strong> als unbewegliches Zentrum des Universums. Mond, Sonne und Planeten bewegen sich auf <strong>Kristallkugeln (Sphären)</strong> um die Erde. Planeten auf kleinen Kreisen (Epizyklen) auf einem großen Kreis (Deferent). → Fahre über einen Planeten für Details.
+        </div>
+        <a class="audio-link" href="https://drive.google.com/file/d/1Q7XwAcA0ioHkK_C48V1a5lYif392lYM9/view?usp=share_link" target="_blank">▶ Audio-Erklärung</a>
+      </div>
+      <!-- HELIO -->
+      <div class="model-card helio">
+        <div class="model-label">Modell B</div>
+        <div class="model-name">Heliozentrisches Weltbild</div>
+        <div class="model-by">nach Johannes Kepler · 1571–1630</div>
+        <div class="orbit-canvas" id="helio-canvas">
+          <div class="center-body" id="helio-center" style="width:30px;height:30px;background:radial-gradient(circle at 35% 35%,#f9e79f,#e67e22);box-shadow:0 0 18px rgba(230,126,34,0.7);"></div>
+        </div>
+        <div class="model-controls">
+          <button class="ctrl-btn active" onclick="setSpeed('helio',1,this)">Normal</button>
+          <button class="ctrl-btn" onclick="setSpeed('helio',3,this)">Schnell</button>
+          <button class="ctrl-btn" onclick="setSpeed('helio',0,this)">Pause</button>
+        </div>
+        <div class="model-desc">
+          <strong>Sonne</strong> im Mittelpunkt des Planetensystems. Planeten bewegen sich auf <strong>elliptischen Bahnen</strong> um die Sonne. Mond umkreist die Erde. Fixsterne in sehr unterschiedlichen Entfernungen. → Fahre über einen Planeten für Details.
+        </div>
+        <a class="audio-link" href="https://drive.google.com/file/d/1h9KpTTNk2DMrNynteM6xcP6Op-TEqA8F/view?usp=share_link" target="_blank">▶ Audio-Erklärung</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section id="timeline">
+  <div class="container">
+    <div class="sec-header">
+      <span class="sec-num">02 /</span>
+      <h2 class="sec-title">Historischer <span>Zeitstrahl</span></h2>
+    </div>
+    <div class="tl-outer">
+      <div class="tl-track"></div>
+
+      <div class="tl-item">
+        <div class="tl-year">ca. 2. Jh.<br>n. Chr.</div>
+        <div class="tl-dot-col"><div class="tl-dot geo-dot"></div></div>
+        <div class="tl-content">
+          <div class="tl-person">Claudius Ptolemäus</div>
+          <span class="tl-tag tag-geo">Geozentrisch</span>
+          <div class="tl-summary">Formulierung des geozentrischen Weltbildes mit ruhender Erde im Zentrum und Epizykeln für Planeten.</div>
+          <button class="tl-toggle" onclick="toggleTL(this)">+ Details</button>
+          <div class="tl-detail">
+            <p>Ptolemäus fasst das griechische Weltbild in der „Syntaxis Mathematicae" (Almagest) zusammen. Die Erde steht unbeweglich im Zentrum des Universums. Sonne, Mond und Planeten (Merkur, Venus, Mars, Jupiter, Saturn) bewegen sich auf Kristallkugeln (Sphären) um die Erde. Planeten laufen dabei auf kleinen Kreisen (Epizyklen) um einen Punkt auf dem großen Kreis (Deferent). Das Modell ermöglicht relativ genaue Vorhersagen der Planetenstellungen.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-year">Mittelalter</div>
+        <div class="tl-dot-col"><div class="tl-dot geo-dot"></div></div>
+        <div class="tl-content">
+          <div class="tl-person">Christliche &amp; islamische Gelehrtenwelt</div>
+          <span class="tl-tag tag-geo">Geozentrisch</span>
+          <div class="tl-summary">Übernahme und Dogmatisierung des ptolemäischen Systems in christlicher und islamischer Gelehrtenwelt.</div>
+          <button class="tl-toggle" onclick="toggleTL(this)">+ Details</button>
+          <div class="tl-detail">
+            <p>Das geozentrische Weltbild wird zur religiösen Wahrheit erhoben und von Kirche und islamischen Gelehrten als absolut gültig betrachtet. Abweichungen werden als Ketzerei angesehen. Das System bleibt über 1.400 Jahre nahezu unverändert bestehen.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-year">15.–frühes<br>16. Jh.</div>
+        <div class="tl-dot-col"><div class="tl-dot"></div></div>
+        <div class="tl-content">
+          <div class="tl-person">Erste Zweifel</div>
+          <span class="tl-tag tag-both">Übergang</span>
+          <div class="tl-summary">Genauere Himmelsbeobachtungen, wachsende Diskrepanzen und rechnerische Komplexität; erste Zweifel am geozentrischen Modell.</div>
+          <button class="tl-toggle" onclick="toggleTL(this)">+ Details</button>
+          <div class="tl-detail">
+            <p>Präzisere astronomische Instrumente enthüllen immer mehr Unstimmigkeiten zwischen den Vorhersagen des ptolemäischen Modells und den tatsächlichen Beobachtungen. Um die Abweichungen zu erklären, werden dem Modell immer mehr Epizyklen hinzugefügt, was es zunehmend unhandlich und unelegant macht.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-year">1543</div>
+        <div class="tl-dot-col"><div class="tl-dot helio-dot"></div></div>
+        <div class="tl-content">
+          <div class="tl-person">Nikolaus Kopernikus</div>
+          <span class="tl-tag tag-helio">Heliozentrisch</span>
+          <div class="tl-summary">Veröffentlichung von „De revolutionibus orbium coelestium" – Sonne ins Zentrum, Erde als Planet.</div>
+          <button class="tl-toggle" onclick="toggleTL(this)">+ Details</button>
+          <div class="tl-detail">
+            <p>Kopernikus stellt nach jahrelangen Berechnungen die Sonne in den Mittelpunkt und erklärt die Erde zum Planeten. Sein Modell ist mathematisch eleganter, aber noch mit Kreisbahnen. Die Veröffentlichung erfolgt kurz vor seinem Tod – er weiß um die Brisanz seiner Ideen. Es löst die „Kopernikanische Wende" aus: die größte wissenschaftliche Revolution der Neuzeit.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-year">Ende<br>16. Jh.</div>
+        <div class="tl-dot-col"><div class="tl-dot"></div></div>
+        <div class="tl-content">
+          <div class="tl-person">Tycho de Brahe</div>
+          <span class="tl-tag tag-both">Hybrid-Modell</span>
+          <div class="tl-summary">Äußerst präzise Messdaten der Planetenbahnen; Entwicklung eines Mischmodells (Erde im Zentrum, Planeten um Sonne).</div>
+          <button class="tl-toggle" onclick="toggleTL(this)">+ Details</button>
+          <div class="tl-detail">
+            <p>Tycho de Brahe ist der letzte große Vertreter des geozentrischen Weltbildes und gleichzeitig der präziseste Beobachter seiner Zeit. Er erstellt über Jahrzehnte hinweg äußerst genaue Planetendaten – ohne Fernrohr. Sein Kompromissmodell: Erde im Mittelpunkt, Sonne umkreist die Erde, alle anderen Planeten umkreisen die Sonne. Planeten auf idealen Kreisbahnen, nicht mehr an Kristallkugeln gebunden.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-year">1609–1610</div>
+        <div class="tl-dot-col"><div class="tl-dot helio-dot"></div></div>
+        <div class="tl-content">
+          <div class="tl-person">Galileo Galilei</div>
+          <span class="tl-tag tag-proof">Beobachtungsbelege</span>
+          <div class="tl-summary">Entdeckung von Jupitermonden und Venusphasen mit dem Fernrohr – widerlegt das strenge Geozentrismus-Modell.</div>
+          <button class="tl-toggle" onclick="toggleTL(this)">+ Details</button>
+          <div class="tl-detail">
+            <p>Galilei richtet eines der ersten Fernrohre auf den Himmel. Er entdeckt die vier großen Monde des Jupiters (heute Galileische Monde) – Körper, die eindeutig nicht die Erde umkreisen. Die Venusphasen zeigen, dass Venus die Sonne umläuft. Galilei stützt damit das kopernikanische Modell empirisch – und gerät in Konflikt mit der Kirche (Inquisition, Hausarrest).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-year">1609–1619</div>
+        <div class="tl-dot-col"><div class="tl-dot helio-dot"></div></div>
+        <div class="tl-content">
+          <div class="tl-person">Johannes Kepler</div>
+          <span class="tl-tag tag-helio">Heliozentrisch</span>
+          <div class="tl-summary">Drei Gesetze der Planetenbewegung: elliptische Bahnen, veränderliche Bahngeschwindigkeit, Zeitraum-Bahnachse-Gesetz.</div>
+          <button class="tl-toggle" onclick="toggleTL(this)">+ Details</button>
+          <div class="tl-detail">
+            <p>Kepler nutzt Tycho de Brahes präzise Messdaten und erkennt: die Planetenbahnen sind keine Kreise, sondern Ellipsen. Seine drei Gesetze beschreiben die Planetenbewegung mathematisch exakt:<br>
+            1. Planeten bewegen sich auf Ellipsen, in deren einem Brennpunkt die Sonne steht.<br>
+            2. Die Verbindungslinie Sonne–Planet überstreicht in gleichen Zeiten gleiche Flächen.<br>
+            3. Das Quadrat der Umlaufzeit verhält sich wie die dritte Potenz der großen Halbachse.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-year">1687</div>
+        <div class="tl-dot-col"><div class="tl-dot helio-dot"></div></div>
+        <div class="tl-content">
+          <div class="tl-person">Isaac Newton</div>
+          <span class="tl-tag tag-proof">Physikalische Erklärung</span>
+          <div class="tl-summary">Gravitationstheorie erklärt Keplers Gesetze und die Planetenbahnen physikalisch.</div>
+          <button class="tl-toggle" onclick="toggleTL(this)">+ Details</button>
+          <div class="tl-detail">
+            <p>Newton veröffentlicht die „Principia Mathematica" und liefert die physikalische Grundlage für Keplers empirisch gefundene Gesetze: die universelle Gravitation. Jede Masse zieht jede andere Masse an – die Kraft nimmt mit dem Quadrat des Abstands ab. Damit lassen sich nicht nur Planetenbahnen, sondern alle Himmelsmechanik berechnen.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-year">18.–19. Jh.</div>
+        <div class="tl-dot-col"><div class="tl-dot helio-dot"></div></div>
+        <div class="tl-content">
+          <div class="tl-person">Direkte Beobachtungsbelege</div>
+          <span class="tl-tag tag-proof">Beobachtungsbelege</span>
+          <div class="tl-summary">Stellare Aberration, Parallaxe ferner Sterne, Foucaultsches Pendel – direkte Belege für die Erdbewegung.</div>
+          <button class="tl-toggle" onclick="toggleTL(this)">+ Details</button>
+          <div class="tl-detail">
+            <p>Erstmals gibt es direkte messbare Belege für die Bewegung der Erde:<br>
+            • Stellare Aberration (1727, Bradley): Verschiebung von Sternpositionen durch Erdbewegung.<br>
+            • Sternparallaxe (1838, Bessel): messbare Winkelverschiebung naher Sterne durch Erdumlauf.<br>
+            • Foucaultsches Pendel (1851): sichtbare Drehung der Schwingungsebene beweist Erdrotation.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-year">17.–20. Jh.</div>
+        <div class="tl-dot-col"><div class="tl-dot"></div></div>
+        <div class="tl-content">
+          <div class="tl-person">Modernes Weltbild</div>
+          <span class="tl-tag tag-both">Dezentral</span>
+          <div class="tl-summary">Erkenntnis: die Sonne ist nur ein Stern in der Milchstraße – kein Mittelpunkt des Universums.</div>
+          <button class="tl-toggle" onclick="toggleTL(this)">+ Details</button>
+          <div class="tl-detail">
+            <p>Die Astronomie erkennt zunehmend, dass die Sonne kein besonderer Mittelpunkt ist, sondern ein durchschnittlicher Stern am Rand der Milchstraße. Das Universum hat keinen Mittelpunkt. Der Übergang zum modernen, „dezentralen" Weltbild ist vollzogen: Erde umkreist Sonne, Sonne umkreist galaktisches Zentrum, Milchstraße ist eine von Milliarden Galaxien.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- VERGLEICH -->
+<section id="vergleich">
+  <div class="container">
+    <div class="sec-header">
+      <span class="sec-num">03 /</span>
+      <h2 class="sec-title">Geo vs. <span>Helio</span></h2>
+    </div>
+    <div class="compare-tabs">
+      <button class="tab-btn active" onclick="showTab('table',this)">Tabelle</button>
+      <button class="tab-btn" onclick="showTab('summary',this)">Übersicht</button>
+    </div>
+    <table class="compare-table active" id="tab-table">
+      <thead>
+        <tr>
+          <th>Körper</th>
+          <th class="th-geo">🌍 Geozentrisch</th>
+          <th class="th-helio">☀️ Heliozentrisch</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Sonne</td><td class="geo-cell">Tägl./jährl. Kreisbewegungen auf Sphären um die Erde</td><td class="helio-cell">In Ruhe / rotiert nur um sich selbst</td></tr>
+        <tr><td>Erde</td><td class="geo-cell">In Ruhe – unbewegliches Weltzentrum</td><td class="helio-cell">Tägl. Rotation + jährl. Ellipsenbewegung um Sonne</td></tr>
+        <tr><td>Mond</td><td class="geo-cell">Tägl./monatl. Kreisbewegung um die Erde</td><td class="helio-cell">Monatl. Ellipsenbewegung um die Erde</td></tr>
+        <tr><td>Planeten</td><td class="geo-cell">Kreisbewegungen via Epizyklen auf Deferent um Erde</td><td class="helio-cell">Ellipsenbahnen um die Sonne (Keplersche Gesetze)</td></tr>
+        <tr><td>Fixsterne</td><td class="geo-cell">Auf äußerster Kristallkugel befestigt, tägl. Drehung</td><td class="helio-cell">Ruhend – in sehr unterschiedlichen Entfernungen</td></tr>
+      </tbody>
+    </table>
+    <div class="summary-cards" id="tab-summary">
+      <div class="sum-card geo-card">
+        <h3>🌍 Geozentrisch</h3>
+        <ul>
+          <li>Erde als unbewegliches Zentrum</li>
+          <li>Planeten/Sonne auf Kristallkugeln</li>
+          <li>Fixsterne auf äußerster Sphäre</li>
+          <li>Epizyklen erklären Planetenschleifen</li>
+          <li>Vertreter: Ptolemäus, Tycho de Brahe</li>
+          <li>Über 1.400 Jahre gültig</li>
+        </ul>
+      </div>
+      <div class="sum-card helio-card">
+        <h3>☀️ Heliozentrisch</h3>
+        <ul>
+          <li>Sonne als Zentrum des Planetensystems</li>
+          <li>Planeten auf Ellipsenbahnen (Kepler)</li>
+          <li>Mond umkreist die Erde</li>
+          <li>Fixsterne in unterschiedl. Entfernungen</li>
+          <li>Vertreter: Kopernikus, Galilei, Kepler</li>
+          <li>Seit 16. Jh. wissenschaftlich etabliert</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KAHOOT -->
+<div id="kahoot-section">
+  <div class="kahoot-inner">
+    <div class="kahoot-text">
+      <label>Wissen testen</label>
+      <h3>Quiz · Weltbilder</h3>
+    </div>
+    <a class="kahoot-btn" href="https://create.kahoot.it/share/weltbilder/7c29fa34-17f2-40aa-9b47-1dc235c73f9b" target="_blank">
+      🎮 Kahoot Quiz starten
+    </a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-title">Quellen · Sources</div>
+    <div class="footer-sources">
+      <span>Busch, Seiten 106–115 · Abruf: April 2026</span>
+      <a href="https://www.leifiphysik.de/astronomie/planetensystem/geschichte/heliozentrisches-weltsystem" target="_blank">leifiphysik.de · Heliozentrisches Weltsystem · Abruf: April 2026</a>
+      <a href="https://www.leifiphysik.de/astronomie/planetensystem/geschichte/weltsysteme-im-vergleich" target="_blank">leifiphysik.de · Weltsysteme im Vergleich · Abruf: April 2026</a>
+      <a href="https://astrokramkiste.de/heliozentrisches-weltbild" target="_blank">astrokramkiste.de · Heliozentrisches Weltbild · Abruf: April 2026</a>
+    </div>
+    <div class="footer-bottom">
+      Interaktives Lernplakat · Physik Thema 1 · Max-Josef-Stift München
+    </div>
+  </div>
+</footer>
+
+<script>
+// ===== PLANET MODELS =====
+const tooltip = document.getElementById('tooltip');
+
+const geoPlanets = [
+  {name:'Mond',    color:'#909090', r:38,  size:6,  speed:0.045, desc:'Monatl. Kreisbewegung um Erde auf Kristallkugel.'},
+  {name:'Merkur',  color:'#7f8c8d', r:60,  size:4,  speed:0.032, desc:'Kreisbewegung via Epizykel-Deferent um Erde.'},
+  {name:'Venus',   color:'#ca6f1e', r:80,  size:6,  speed:0.022, desc:'Tägl. Kreisbewegung auf Sphäre um die Erde.'},
+  {name:'Sonne',   color:'#e67e22', r:105, size:13, speed:0.015, desc:'Jährl. Kreisbewegung auf Sphäre um Erde.'},
+  {name:'Mars',    color:'#c0392b', r:120, size:5,  speed:0.010, desc:'Spezif. Kreisbewegung via Sphären um Erde.'},
+  {name:'Jupiter', color:'#d4ac0d', r:138, size:8,  speed:0.006, desc:'Langsame Kreisbewegung auf Sphäre um Erde.'},
+  {name:'Saturn',  color:'#a9cce3', r:155, size:8,  speed:0.004, desc:'Äußerste bekannte Planeten-Sphäre um Erde.'},
+];
+
+const helioPlanets = [
+  {name:'Merkur',  color:'#7f8c8d', r:32,  size:4,  speed:0.06,  desc:'Schnellste Ellipsenbahn um die Sonne.'},
+  {name:'Venus',   color:'#ca6f1e', r:52,  size:6,  speed:0.042, desc:'Ellipsenbahn; rotiert rückläufig.'},
+  {name:'Erde',    color:'#2980b9', r:72,  size:7,  speed:0.030, desc:'Jährl. Ellipsenbewegung um Sonne, tägl. Rotation.'},
+  {name:'Mond',    color:'#909090', r:72,  size:4,  speed:0.120, desc:'Monatl. Ellipsenbewegung um Erde.', moon:true, hostIndex:2},
+  {name:'Mars',    color:'#c0392b', r:95,  size:5,  speed:0.020, desc:'Ellipsenbahn; rotiert um eigene Achse.'},
+  {name:'Jupiter', color:'#d4ac0d', r:120, size:9,  speed:0.010, desc:'Größter Planet; Ellipsenbahn um Sonne.'},
+  {name:'Saturn',  color:'#a9cce3', r:145, size:8,  speed:0.007, desc:'Ellipsenbahn; bekannt für Ringsystem.'},
+];
+
+const geoState   = {speed:1, angles: geoPlanets.map(()=>Math.random()*Math.PI*2)};
+const helioState = {speed:1, angles: helioPlanets.map(()=>Math.random()*Math.PI*2)};
+let geoEls=[], helioEls=[];
+
+function showTip(e,name,desc){ tooltip.innerHTML=`<strong>${name}</strong>${desc}`; tooltip.style.display='block'; }
+function moveTip(e){ tooltip.style.left=(e.clientX+14)+'px'; tooltip.style.top=(e.clientY+14)+'px'; }
+function hideTip(){ tooltip.style.display='none'; }
+
+function buildModel(id, planets, elArr, isGeo) {
+  const c = document.getElementById(id);
+  planets.forEach((p,i)=>{
+    if(!p.moon){
+      const ring = document.createElement('div');
+      ring.className='orbit-ring';
+      ring.style.width = p.r*2+'px'; ring.style.height = p.r*2+'px';
+      c.appendChild(ring);
+    }
+    const dot = document.createElement('div');
+    dot.className='planet-dot';
+    dot.style.width = p.size*2+'px'; dot.style.height = p.size*2+'px';
+    dot.style.background = p.color;
+    dot.style.boxShadow = `0 0 4px ${p.color}88`;
+    dot.addEventListener('mouseenter', e=>showTip(e,p.name,p.desc));
+    dot.addEventListener('mousemove', moveTip);
+    dot.addEventListener('mouseleave', hideTip);
+    c.appendChild(dot);
+    elArr.push(dot);
+  });
+}
+
+const geoCenter = document.getElementById('geo-center');
+geoCenter.addEventListener('mouseenter', e=>showTip(e,'Erde','Unbewegliches Zentrum des Universums.'));
+geoCenter.addEventListener('mousemove', moveTip);
+geoCenter.addEventListener('mouseleave', hideTip);
+const helioCenter = document.getElementById('helio-center');
+helioCenter.addEventListener('mouseenter', e=>showTip(e,'Sonne','Zentrum des Planetensystems – rotiert nur um sich selbst.'));
+helioCenter.addEventListener('mousemove', moveTip);
+helioCenter.addEventListener('mouseleave', hideTip);
+
+buildModel('geo-canvas', geoPlanets, geoEls, true);
+buildModel('helio-canvas', helioPlanets, helioEls, false);
+
+function animate(planets, state, elArr, cx, cy) {
+  planets.forEach((p,i)=>{
+    if(state.speed!==0) state.angles[i] += p.speed*state.speed*0.016;
+    let x,y;
+    if(p.moon){
+      const h=planets[p.hostIndex];
+      x = cx + Math.cos(state.angles[p.hostIndex])*h.r + Math.cos(state.angles[i])*14;
+      y = cy + Math.sin(state.angles[p.hostIndex])*h.r + Math.sin(state.angles[i])*14;
+    } else {
+      x = cx + Math.cos(state.angles[i])*p.r;
+      y = cy + Math.sin(state.angles[i])*p.r;
+    }
+    elArr[i].style.left=x+'px'; elArr[i].style.top=y+'px';
+  });
+}
+
+let last=performance.now();
+function loop(now){
+  animate(geoPlanets,   geoState,   geoEls,   150, 150);
+  animate(helioPlanets, helioState, helioEls, 150, 150);
+  last=now; requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+window.setSpeed=function(model,spd,btn){
+  if(model==='geo')   geoState.speed=spd;
+  if(model==='helio') helioState.speed=spd;
+  btn.closest('.model-controls').querySelectorAll('.ctrl-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+};
+
+// ===== TIMELINE =====
+const tlItems = document.querySelectorAll('.tl-item');
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.15});
+tlItems.forEach(it=>obs.observe(it));
+
+window.toggleTL=function(btn){
+  const detail = btn.nextElementSibling;
+  const dot = btn.closest('.tl-item').querySelector('.tl-dot');
+  detail.classList.toggle('open');
+  dot.classList.toggle('open');
+  btn.textContent = detail.classList.contains('open') ? '− Details' : '+ Details';
+};
+
+// ===== TABS =====
+window.showTab=function(tab,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-table').classList.toggle('active', tab==='table');
+  document.getElementById('tab-summary').classList.toggle('active', tab==='summary');
+};
+</script>
+</body>
+</html>
